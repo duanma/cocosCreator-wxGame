@@ -1,2 +1,1 @@
-# cocosCreator-wxGame
-# cocosCreator-wxGame
+基于cocosCreator2.0封装的微信小游戏开发框架
