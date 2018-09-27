@@ -34,7 +34,7 @@ export default class Facade {
                 let arr = name.split(",");
                 let results = [];
                 for (let i in arr){
-                    let name = arr[i];
+                    let name = arr[i].trim();
                     let interceptors = Interceptor.interceptorsOf(name);
                     if (interceptors.length > 0){
                         let flag = true;
