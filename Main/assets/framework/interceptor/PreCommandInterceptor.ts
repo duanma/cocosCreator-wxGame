@@ -11,7 +11,7 @@ import {ICommandInterceptor} from "./CommandInterceptor";
 
 export abstract class PreCommandInterceptor implements ICommandInterceptor {
 
-    abstract async preHandle(...args):Promise;
+    abstract async preHandle(...args):Promise<boolean>;
 
     async postHandle(...args):Promise{
         return new Promise(resolve => resolve());

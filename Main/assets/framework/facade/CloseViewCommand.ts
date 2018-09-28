@@ -8,19 +8,23 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {ICommand} from "../../../framework/facade/ICommand";
-import Facade from "../../../framework/facade/Facade";
+import {ICommand} from "./ICommand";
+import Facade from "./Facade";
 
 const {ccclass, property} = cc._decorator;
 
-@ccclass("ToGameOverCommand")
-export default class ToGameOverCommand implements ICommand {
+@ccclass("CloseViewCommand")
+export default class CloseViewCommand implements ICommand {
 
     async execute (...args):Promise{
-        return new Promise(async (resolve, reject) => {
-            Facade.executeCommand("WxShowOverCommand");
-            await Facade.openView("prefab/over");
-            Facade.closeView("game");
+        let nodeName = args[0];
+        return new Promise((resolve, reject) => {
+            let node = Facade.canvasNode.getChildByName(nodeName);
+            if (node){
+                node.destroy();
+            }
         });
     }
 }
+
+

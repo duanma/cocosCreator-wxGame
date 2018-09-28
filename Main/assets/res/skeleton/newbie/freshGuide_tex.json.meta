@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "d3baaf0a-ca48-4d2c-a01d-b352d930324a",
+  "atlasJson": "{\"imagePath\":\"freshGuide_tex.png\",\"width\":128,\"SubTexture\":[{\"width\":98,\"y\":1,\"height\":98,\"name\":\"newPepole\",\"x\":1},{\"width\":99,\"y\":101,\"height\":97,\"name\":\"icon-zp000\",\"x\":1}],\"height\":256,\"name\":\"freshGuide\"}",
+  "texture": "0f874651-de50-4242-836e-00aae0e45220",
+  "subMetas": {}
+}

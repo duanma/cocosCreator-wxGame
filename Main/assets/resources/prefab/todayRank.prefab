@@ -1281,7 +1281,7 @@
       "__id__": 1
     },
     "component": "View",
-    "handler": "closeWithClickSound",
+    "handler": "closeViewWithClickSound",
     "customEventData": ""
   },
   {

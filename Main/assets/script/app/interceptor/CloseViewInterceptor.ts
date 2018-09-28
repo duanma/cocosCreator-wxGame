@@ -8,16 +8,29 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import {ICommandInterceptor} from "../../../framework/interceptor/CommandInterceptor";
+
+const {ccclass, property} = cc._decorator;
+
+@ccclass
+export default class CloseViewInterceptor implements ICommandInterceptor {
+
+    /**
+     * 关闭view之前处理
+     * */
+    async preHandle(...args):Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            resolve(true);
+        });
+    }
 
 
-
-import {PostCommandInterceptor} from "../../../framework/interceptor/PostCommandInterceptor";
-import Facade from "../../../framework/facade/Facade";
-import {Interceptor} from "../../../framework/interceptor/Interceptor";
-
-export class CloseGameStartTipsInterceptor extends PostCommandInterceptor {
+    /**
+     * 关闭view之后处理
+     * */
     async postHandle(...args):Promise{
-        Facade.closeView("gameStartTips");
-        Interceptor.unregister("GameTouchCommand", CloseGameStartTipsInterceptor);
+        return new Promise((resolve, reject) =>{
+            resolve();
+        });
     }
 }

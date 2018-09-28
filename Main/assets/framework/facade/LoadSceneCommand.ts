@@ -8,19 +8,19 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {ICommand} from "../../../framework/facade/ICommand";
-import Facade from "../../../framework/facade/Facade";
+import {ICommand} from "./ICommand";
 
 const {ccclass, property} = cc._decorator;
 
-@ccclass("ToGameCommand")
-export default class ToGameCommand implements ICommand {
+@ccclass("LoadSceneCommand")
+export default class LoadSceneCommand implements ICommand {
 
     async execute (...args):Promise{
-        return new Promise(async (resolve, reject) => {
-            Facade.executeCommand("WxShowGameCommand");
-            await Facade.openView("prefab/game");
-            Facade.closeView("home");
+        let sceneName = args[0];
+        return new Promise((resolve, reject) => {
+            cc.director.loadScene(sceneName, function () {
+                resolve();
+            })
         });
     }
 }

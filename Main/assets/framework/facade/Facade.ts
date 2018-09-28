@@ -41,7 +41,7 @@ export default class Facade {
                         let tempArr = interceptors.slice(0);
                         while (tempArr.length > 0){
                             let commandInterceptor = tempArr.shift();
-                            console.log(`execute interceptor===>commandName=${name} interceptorName=${commandInterceptor.toString()}`);
+                            console.log(`execute preHandle===>commandName=${name} interceptorName=${commandInterceptor.constructor.name}`);
                             flag = await commandInterceptor.preHandle(...args).catch(reason => {
                                 let err;
                                 if (typeof reason == "string"){
@@ -83,7 +83,7 @@ export default class Facade {
                         let tempArr = interceptors.slice(0);
                         while (tempArr.length > 0){
                             let commandInterceptor = tempArr.shift();
-                            console.log(`execute postHandle===>commandName=${name} interceptorName=${commandInterceptor.toString()}`);
+                            console.log(`execute postHandle===>commandName=${name} interceptorName=${commandInterceptor.constructor.name}`);
                             await commandInterceptor.postHandle(...args).catch(reason => {
                                 let err;
                                 if (typeof reason == "string"){
@@ -173,37 +173,6 @@ export default class Facade {
             node.group = group;
         }
         return node;
-    }
-
-    /**
-     * 关闭视图
-     * */
-    static closeView(nodeName:string){
-        let node = this.canvasNode.getChildByName(nodeName);
-        if (node){
-            node.destroy();
-        }
-    }
-
-    /**
-     * 打开视图
-     * */
-    static async openView(prefabName:string, separationLayerOpacity?:number, group?:string, zOrder?:number):Promise{
-        return new Promise(async(resolve, reject) => {
-            let separationLayer = Facade.addSeparationLayer(group, separationLayerOpacity, zOrder);
-            let prefab = await cc.loader.loadResAwait(prefabName, cc.Prefab);
-            let node:cc.Node = cc.instantiate(prefab);
-            node.setParent(Facade.canvasNode);
-            LifeCycle.onDestroyFollow(separationLayer, node);
-            if (group){
-                node.group = group;
-            }
-
-            if (zOrder){
-                node.zIndex = zOrder;
-            }
-            resolve(node);
-        });
     }
 
 }

@@ -30,7 +30,9 @@ export default class LifeCycle extends cc.Component {
     static onDestroyFollow(node:cc.Node, followNode:cc.Node){
         let lifeCycle = followNode.addComponent(LifeCycle);
         lifeCycle.addCall("onDestroy", function () {
-            node.destroy();
+            if (node.isValid){
+                node.destroy();
+            }
         });
     }
 

@@ -51,8 +51,8 @@ export default class View extends cc.Component {
     /**
      * @param data commandName
      * */
-   async close(event, data){
-       this.node.destroy();
+   async closeView(event, data){
+       await Facade.executeCommand("CloseViewCommand", this.node.name);
        if(typeof data == "string" && data != ""){
            await Facade.executeCommand(data);
        }
@@ -61,16 +61,16 @@ export default class View extends cc.Component {
     /**
      * @param data commandName
      * */
-    async closeWithClickSound(event, data){
+    async closeViewWithClickSound(event, data){
         View.executeClickSoundCommand(event, data);
-        await this.close(event, data);
+        await this.closeView(event, data);
     }
 
     /**
      * @param data prefabName
      * */
     async openView(event, data){
-        await Facade.openView(data);
+        await Facade.executeCommand("OpenViewCommand", data);
     }
 
     /**
@@ -79,6 +79,21 @@ export default class View extends cc.Component {
     async openViewWithClickSound(event, data){
         View.executeClickSoundCommand(event, data);
         await this.openView(event, data);
+    }
+
+    /**
+     * @param data sceneName
+     * */
+    async loadScene(event, data){
+        await Facade.executeCommand("LoadSceneCommand", data);
+    }
+
+    /**
+     * @param data sceneName
+     * */
+    async loadSceneWithClickSound(event, data){
+        View.executeClickSoundCommand(event, data);
+        await Facade.executeCommand("LoadSceneCommand", data);
     }
 
 

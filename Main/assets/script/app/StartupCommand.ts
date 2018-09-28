@@ -26,6 +26,10 @@ import {HttpOption} from "../../framework/http/HttpOption";
 import {HttpClient} from "../../framework/http/HttpClient";
 import {Music} from "../../framework/audio/Music";
 import View from "../../framework/component/View";
+import {Interceptor} from "../../framework/interceptor/Interceptor";
+import OpenViewInterceptor from "./interceptor/OpenViewInterceptor";
+import CloseViewInterceptor from "./interceptor/CloseViewInterceptor";
+import LoadSceneIntercetor from "./interceptor/LoadSceneIntercetor";
 
 const {ccclass, property} = cc._decorator;
 
@@ -36,9 +40,6 @@ export default class StartupCommand implements ICommand {
             console.log(AppConfig.gameName);
             console.log(AppConfig.version);
             LocalStorage.prefix = AppConfig.GameID;
-            await Facade.initSeparationLayer("prefab/separationLayer");
-            await Facade.openView("prefab/loading");
-
             let physicsManager = cc.director.getPhysicsManager();
             physicsManager.enabled = true;
             physicsManager.enabledAccumulator = false;
@@ -117,9 +118,16 @@ export default class StartupCommand implements ICommand {
                 console.log("cc.game.EVENT_HIDE============>");
             });*/
 
+            /** 注册拦截器 */
+            Interceptor.register("OpenViewCommand", OpenViewInterceptor);
+            Interceptor.register("CloseViewCommand", CloseViewInterceptor);
+            Interceptor.register("LoadSceneCommand", LoadSceneIntercetor);
 
+
+            /** 初始化隔离层prefab */
+            await Facade.initSeparationLayer("prefab/separationLayer");
             /** 开始加载 */
-            await Facade.executeCommand("LoadingCommand");
+            Facade.executeCommand("LoadingCommand");
 
             resolve(true);
         });

@@ -8,24 +8,29 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import {ICommandInterceptor} from "../../../framework/interceptor/CommandInterceptor";
+
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class OpenViewInterceptor implements ICommandInterceptor {
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
+    /**
+     * 打开view之前处理
+     * */
+    async preHandle(...args):Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            resolve(true);
+        });
     }
 
-    // update (dt) {}
+
+    /**
+     * 打开view之后处理
+     * */
+    async postHandle(...args):Promise{
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    }
 }

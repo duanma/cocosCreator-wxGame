@@ -39,10 +39,10 @@ export default class ToLoginCommand implements ICommand {
                 console.log(userInfo, "userInfo");
                 await Facade.executeCommand("LoginServerCommand");
                 wx.postMessage({command:"ReadMyInfoCommand", data:{nickName:World.My.nickName, avatarUrl:World.My.avatarUrl, gender:World.My.gender, openId:World.My.openId}});
-                await Facade.executeCommand("ToHomeCommand");
                 separationLayer.destroy();
+                await Facade.executeCommand("LoadSceneCommand", "HomeScene");
             }else {
-                await Facade.executeCommand("ToHomeCommand");
+                await Facade.executeCommand("LoadSceneCommand", "HomeScene");
             }
             resolve();
         });
