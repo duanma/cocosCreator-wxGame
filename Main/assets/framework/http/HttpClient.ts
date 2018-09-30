@@ -11,8 +11,8 @@
 
 
 import {HttpOption} from "./HttpOption";
-import {IConverter} from "../converter/IConverter";
 import Facade from "../facade/Facade";
+import HttpProtocol from "./HttpProtocol";
 
 const {ccclass, property} = cc._decorator;
 
@@ -26,23 +26,23 @@ export class HttpClient{
         cookieMap.delete(cookieKey);
     }
 
-    static async get(uri:string, request:IConverter, response:IConverter, httpOption?:HttpOption){
-        return this.send("GET", uri, request, response, httpOption);
+    static async get(protocol:HttpProtocol, httpOption?:HttpOption){
+        return this.send("GET", protocol, httpOption);
     }
 
-    static async post(uri:string, request:IConverter, response:IConverter, httpOption?:HttpOption){
-        return this.send("POST", uri, request, response, httpOption);
+    static async post(protocol:HttpProtocol, httpOption?:HttpOption){
+        return this.send("POST", protocol, httpOption);
     }
 
 
-    static async send(method:string, uri:string, request:IConverter, response:IConverter, httpOption?:HttpOption){
+    static async send(method:string, protocol:HttpProtocol, httpOption?:HttpOption){
         return new Promise(async(resolve, reject) => {
             let option = httpOption || HttpClient.defaultHttpOption;
             let xmlrequest = new XMLHttpRequest();
             xmlrequest.timeout = option.timeout;
             xmlrequest.ontimeout = async function () {
                 if (option.timeoutCommand){
-                    let res = await Facade.executeCommand(option.timeoutCommand, method, uri, request, response, httpOption);
+                    let res = await Facade.executeCommand(option.timeoutCommand, method, protocol, httpOption);
                     resolve(res);
                 }
                 xmlrequest.abort();
@@ -55,8 +55,8 @@ export class HttpClient{
                     }
                     if (xmlrequest.status === 200) {
                         try {
-                            let res = response.decode(xmlrequest.responseText);
-                            resolve(res);
+                            protocol.decode(xmlrequest.responseText);
+                            resolve(protocol.getResponseData());
                         }catch (e) {
                             reject(e);
                         }
@@ -70,7 +70,7 @@ export class HttpClient{
             if (option.port != 80 && option.port != 443){
                 url += `:${option.port}`;
             }
-            url += uri;
+            url += protocol.uri;
             xmlrequest.open(method,url);
 
             if (option.cookieKey){
@@ -81,7 +81,7 @@ export class HttpClient{
             }
 
             option.headers.forEach((value, key) => xmlrequest.setRequestHeader(key, value));
-            let res = request.encode();
+            let res = protocol.encode();
             xmlrequest.send(res);
         });
     }

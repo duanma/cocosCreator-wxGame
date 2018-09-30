@@ -42,6 +42,7 @@ export default class ToLoginCommand implements ICommand {
                 separationLayer.destroy();
                 await Facade.executeCommand("LoadSceneCommand", "HomeScene");
             }else {
+                // await Facade.executeCommand("LoginServerCommand");
                 await Facade.executeCommand("LoadSceneCommand", "HomeScene");
             }
             resolve();
