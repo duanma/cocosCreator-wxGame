@@ -10,24 +10,35 @@
 
 
 
+
+
+
 import {ICommand} from "../facade/ICommand";
 import {ext} from "../extend/Extend";
-import {wxApi} from "./wxApi";
+import {InviteConfig} from "../../script/app/config/InviteConfig";
+import {NetworkConfig} from "../../script/app/config/NetworkConfig";
+import {World} from "../../script/app/info/World";
 
 const {ccclass, property} = cc._decorator;
 
 @ccclass("WxOnShareAppMessageCommand")
 export default class WxOnShareAppMessageCommand implements ICommand {
     async execute (...args):Promise{
-        console.log("===WxOnShareAppMessageCommand///////////", args);
-        let url:string = ext.randomElement(wxApi.shareImageUrls);
-        let title = ext.randomElement(wxApi.shareTitles);
-        let query = wxApi.shareQuery;
-        return {
-            imageUrl : url,
-            title:  title,
-            query : query,
-        }
+        return new Promise(resolve => {
+            wx.onShareAppMessage(function (res) {
+                let data = ext.randomElement(InviteConfig.datas);
+                let title = data["title"];
+                let imageUrl = NetworkConfig.host + "/cli/image/" + data["icon"];
+                let query = `shareKey=share1&playerId=${World.My.playerId}`;
+                return {
+                    imageUrl : imageUrl,
+                    title:  title,
+                    query : query,
+                }
+            });
+            resolve();
+        });
+
     }
 }
 

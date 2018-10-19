@@ -52,10 +52,10 @@ export default class View extends cc.Component {
      * @param data commandName
      * */
    async closeView(event, data){
-       await Facade.executeCommand("CloseViewCommand", this.node.name);
        if(typeof data == "string" && data != ""){
            await Facade.executeCommand(data);
        }
+       await Facade.executeCommand("CloseViewCommand", this.node.name);
     }
 
     /**

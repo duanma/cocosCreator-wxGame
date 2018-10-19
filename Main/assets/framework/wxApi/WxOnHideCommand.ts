@@ -9,7 +9,6 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 
-
 import {ICommand} from "../facade/ICommand";
 
 const {ccclass, property} = cc._decorator;
@@ -17,6 +16,11 @@ const {ccclass, property} = cc._decorator;
 @ccclass("WxOnHideCommand")
 export default class WxOnHideCommand implements ICommand {
     async execute (...args):Promise{
-        let res = args[0];
+        return new Promise(resolve => {
+            wx.onHide(function (res) {
+            });
+            resolve();
+        });
+
     }
 }

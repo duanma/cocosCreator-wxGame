@@ -39,18 +39,9 @@ export class wxApi {
         wx.showShareMenu({withShareTicket: false});
 
 
-        /** 全局回调 */
-        wx.onShow(function (res) {
-            Facade.executeCommand("WxOnShowCommand", res);
-        });
-
-        wx.onHide(function (res) {
-            Facade.executeCommand("WxOnHideCommand", res);
-        });
-
-        wx.onShareAppMessage(async function (res) {
-            return await Facade.executeCommand("WxOnShareAppMessageCommand", res);
-        });
+        Facade.executeCommand("WxOnShowCommand");
+        Facade.executeCommand("WxOnHideCommand");
+        Facade.executeCommand("WxOnShareAppMessageCommand");
     }
 
 

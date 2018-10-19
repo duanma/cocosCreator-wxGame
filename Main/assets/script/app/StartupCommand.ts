@@ -86,7 +86,7 @@ export default class StartupCommand implements ICommand {
             let httpOption = new HttpOption();
             httpOption.host = NetworkConfig.host;
             httpOption.port = 443;
-            httpOption.timeout = 3*60;
+            httpOption.timeout = 3*6000;
             httpOption.timeoutCommand = "HttpTimeoutCommand";
             httpOption.not200Command = "HttpNot200Command";
             httpOption.cookieKey = "vertx-cookie";
@@ -126,6 +126,7 @@ export default class StartupCommand implements ICommand {
 
             /** 初始化隔离层prefab */
             await Facade.initSeparationLayer("prefab/separationLayer");
+            await Facade.initTextTips("prefab/textTips");
             /** 开始加载 */
             Facade.executeCommand("LoadingCommand");
 

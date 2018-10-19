@@ -15,6 +15,7 @@ import {ICommand} from "./ICommand";
 import {ext} from "../extend/Extend";
 import {Interceptor} from "../interceptor/Interceptor";
 import LifeCycle from "../component/LifeCycle";
+import Actions from "../actions/Actions";
 
 export default class Facade {
 
@@ -173,6 +174,36 @@ export default class Facade {
             node.group = group;
         }
         return node;
+    }
+
+    private static _textTipsPrefab:cc.Prefab = null;
+
+    static async initTextTips(textTipsPrefabName:string){
+        this._textTipsPrefab = await cc.loader.loadResAwait(textTipsPrefabName, cc.Prefab);
+    }
+
+    /** 文字提示 */
+    static async textTips(text:string, position?:cc.Vec2, fontSize?:number){
+        if (this._separationPrefab == null){
+            console.error("please call Facade.initTextTips before call Facade.textTips");
+            return;
+        }
+        let node = cc.instantiate(this._textTipsPrefab);
+        node.parent = Facade.canvasNode;
+        node.zIndex = cc.macro.MAX_ZINDEX;
+        if (position){
+            node.position = position;
+        } else {
+            node.position = cc.v2(0, 0);
+        }
+        let richText = node.getComponent(cc.RichText);
+        if (fontSize){
+            richText.fontSize = fontSize;
+        }
+        richText.string = text;
+        ext.showRichText(richText);
+        await node.runActionAwait(Actions.flutterAction());
+        node.destroy();
     }
 
 }

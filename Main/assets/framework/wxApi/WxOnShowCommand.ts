@@ -19,19 +19,16 @@ const {ccclass, property} = cc._decorator;
 export default class WxOnShowCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async (resolve, reject) => {
-            let res = args[0];
-            console.log("=============WxOnShowCommand////////////", res.shareTicket);
-            console.log(res);
-            if( res.shareTicket){ //群点开
-                //发送打开群排行榜界面 游戏返回主菜单
-                await Facade.executeCommand("ToHomeCommand");
-                await Facade.executeCommand("WxShowGroupCommand");
-                await Facade.executeCommand("WxLoadGroupCloudStorageCommand", res.shareTicket);
-                await Facade.executeCommand("ShowRankFriendsCommand");
-                resolve();
-            }
+            wx.onShow(async function (res) {
+                if( res.shareTicket){ //群点开
+                    //发送打开群排行榜界面 游戏返回主菜单
+                    await Facade.executeCommand("ToHomeCommand");
+                    await Facade.executeCommand("WxShowGroupCommand");
+                    await Facade.executeCommand("WxLoadGroupCloudStorageCommand", res.shareTicket);
+                    await Facade.executeCommand("ShowRankFriendsCommand");
+                }
+            });
+            resolve();
         });
-
-
     }
 }
