@@ -34,6 +34,7 @@ export default class RankFriendsMediator extends cc.Component {
 
     onLoad(){
         Facade.canvasNode.on(CanvasEvent.domainShow, this.handleDomainShow, this);
+        this.myItemMediator.node.active = false;
     }
 
     onDestroy(){
@@ -49,6 +50,7 @@ export default class RankFriendsMediator extends cc.Component {
         this.tableViewMediator.setData(orderData);
         for(let i in orderData){
             if (orderData[i]["openid"] == World.My.openId){
+                this.myItemMediator.node.active = true;
                 this.myItemMediator.upadteItem(orderData[i], parseInt(i));
                 break;
             }

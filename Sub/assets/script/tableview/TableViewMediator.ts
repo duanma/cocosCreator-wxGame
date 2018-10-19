@@ -49,9 +49,9 @@ export default class TableViewMediator extends cc.Component {
     private data = [];
     // LIFE-CYCLE CALLBACKS:
 
-    setData(data:Array){
+    onLoad(){
         let itemNode = cc.instantiate(this.itemPrefab);
-        // itemNode.active = false;
+        itemNode.active = false;
         this.itemHeight = itemNode.getContentSize().height;
         let itemHeightHalf = this.itemHeight/2;
         /** 计算出view能装下多少个item */
@@ -63,6 +63,7 @@ export default class TableViewMediator extends cc.Component {
             if (height > viewSize.height){
                 break;
             }
+
             let node = cc.instantiate(itemNode);
             node.x = 0;
             node.y = -height - itemHeightHalf;
@@ -75,11 +76,13 @@ export default class TableViewMediator extends cc.Component {
         itemNode.y = -height - itemHeightHalf;
         itemNode.parent = content;
         this.list.push(itemNode);
+    }
 
+    setData(data:Array){
         /** 计算最大firstIndexMax */
-        let num = Math.ceil((this.scrollView.content.height - this.marginTop - this.marginBottom + this.margin) / (this.itemHeight+this.margin));
-        this.firstIndexMax = this.list.length - num - 1;
-        // console.log(this.firstIndexMax, "this.firstIndexMax");
+        let num = Math.ceil((this.scrollView.node.getContentSize().height - this.marginTop - this.marginBottom + this.margin) / (this.itemHeight+this.margin));
+        this.firstIndexMax = data.length - num - 1;
+        // console.log(this.firstIndexMax,data.length, this.list.length, num, "wxSub this.firstIndexMax************");
 
         this.data = data.slice(0);
         // this.data = [1,2,3,4,5,6,7,8,9];
