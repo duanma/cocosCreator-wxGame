@@ -7,7 +7,20 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-
+/**
+ * 使用TableView注意事项:
+ * 1.设置view anchorY = 1  添加widget并设置top bottom left right都为0
+ * 2.设置content anchorY = 1  y坐标为0  width与view的width保持一致
+ * 3.添加TableViewMediator组件到scrollview节点下，并设置所有值
+ * 4.创建ItemMediator并添加到item节点上，注意:给itemNode设置大小　并保证anchorY = 0.5
+ * 5.当需要像排行榜动画时，需要设置view节点、content节点和item节点的anchorX为0，并且勾选itemAction属性
+ * 6.给scrollview添加scrollevents ==> TableViewMediator.onScorllEvent
+ *
+ * 常见问题：
+ *      1.只显示了第一页，滚动时，第二页后面的item为空白　==>实现上面的第6条，添加滚动事件
+ *      2.刚开始第一行显示坐标是正常的，滚动后第一行显示坐标偏移了  ===>实现上面第1、2条
+ *      3.开启itemAction，动画显示不正常 ==>实现上面第5条
+ * **/
 
 import {ITableItem} from "./ITableItem";
 
@@ -67,14 +80,14 @@ export default class TableViewMediator extends cc.Component {
             let node = cc.instantiate(itemNode);
             node.x = 0;
             node.y = -height - itemHeightHalf;
-            node.parent = content;
+            node.setParent(content);
             this.list.push(node);
             height += this.itemHeight + this.margin;
             // console.log("wx sub===>node.y", node.y);
         }
 
         itemNode.y = -height - itemHeightHalf;
-        itemNode.parent = content;
+        itemNode.setParent(content);
         this.list.push(itemNode);
     }
 
