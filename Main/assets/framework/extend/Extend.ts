@@ -84,6 +84,11 @@ export module ext{
         let diff = max - min;
         return Math.floor(min + (Math.random()*diff*100)%(diff+1))
     }
+
+    /** 修复引擎的bug，cc.RichText有时候设置了string后会导致不显示的问题 */
+    export function showRichText(richText:cc.RichText) {
+        richText.node.children.forEach(value => value.active = true);
+    }
 }
 
 
