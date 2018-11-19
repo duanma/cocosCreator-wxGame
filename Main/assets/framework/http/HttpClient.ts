@@ -61,7 +61,7 @@ export class HttpClient{
                             reject(e);
                         }
                     }else{
-                        await Facade.executeCommand(option.not200Command, xmlrequest.status);
+                        await Facade.executeCommand(option.not200Command, xmlrequest.status, protocol.uri);
                     }
                 }
             };

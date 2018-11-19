@@ -157,7 +157,7 @@ export default class Facade {
     }
 
     /** 加入隔断层 */
-    static addSeparationLayer(group:string = null, opacity:Number = 115, zOrder:Number = 0):cc.Node{
+    static addSeparationLayer(groupIdx:number = null, opacity:Number = 115, zOrder:Number = 0):cc.Node{
         if (this._separationPrefab == null){
             console.error("please call Facade.initSeparationLayer before call Facade.addSeparationLayer");
             return;
@@ -170,8 +170,8 @@ export default class Facade {
         }
         node.zIndex = zOrder;
 
-        if (group){
-            node.group = group;
+        if (groupIdx){
+            node.groupIndex = groupIdx;
         }
         return node;
     }
@@ -189,7 +189,7 @@ export default class Facade {
             return;
         }
         let node = cc.instantiate(this._textTipsPrefab);
-        node.parent = Facade.canvasNode;
+        node.setParent(Facade.canvasNode);
         node.zIndex = cc.macro.MAX_ZINDEX;
         if (position){
             node.position = position;

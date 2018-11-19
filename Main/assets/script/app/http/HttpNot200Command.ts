@@ -12,6 +12,8 @@
 
 
 import {ICommand} from "../../../framework/facade/ICommand";
+import Facade from "../../../framework/facade/Facade";
+import {DialogVO} from "../../../framework/dialog/DialogVO";
 
 const {ccclass, property} = cc._decorator;
 
@@ -19,7 +21,14 @@ const {ccclass, property} = cc._decorator;
 export default class HttpNot200Command implements ICommand {
 
     async execute (...args):Promise{
-        let status = args[0];
-        throw `http request fail===>status=${status}`;
+        return new Promise(async(resolve, reject) => {
+            let status = args[0];
+            let uri = args[1];
+            let vo = new DialogVO();
+            vo.title = {string:DialogVO.colorString('网络错误-status='+status)};
+            vo.content = {string:DialogVO.colorString(uri)};
+            let [res] = await Facade.executeCommand("ShowDialogCommand", vo);
+            resolve();
+        });
     }
 }

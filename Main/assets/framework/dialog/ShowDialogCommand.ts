@@ -22,7 +22,7 @@ export default class ShowDialogCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async (resolve, reject) => {
             let separationLayer = Facade.addSeparationLayer(args[1], args[2]);
-            let prefab = <cc.Prefab>await cc.loader.loadResAwait(DialogMediator.dialogPrefabName, cc.Prefab);
+            let prefab = await cc.loader.loadResAwait(DialogMediator.dialogPrefabName, cc.Prefab);
             let node = cc.instantiate(prefab);
             node.setParent(Facade.canvasNode);
             LifeCycle.onDestroyFollow(separationLayer, node);
@@ -37,7 +37,7 @@ export default class ShowDialogCommand implements ICommand {
                     }
                 }
             }
-            mediator.content.node.children.forEach(value => value.active = true);
+            // mediator.content.node.children.forEach(value => value.active = true);
 
             try {
                 let res = await node.onceAwait(EventEmitter.type);

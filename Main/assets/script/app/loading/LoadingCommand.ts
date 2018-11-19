@@ -40,11 +40,12 @@ export default class LoadingCommand implements ICommand {
             }
             await ExcelConfig.loadAllExcel("data/");
             loadingMediator.updateProgress((fileNames.length +5)/totalCount);
-            let releaseArr = fileNames.filter(value=>ResConfig.retainPrefabs.indexOf(value)<0);
-            releaseArr.forEach(value=>Facade.releasePrefab(value, ["prefab/HomeScene", "prefab/WelcomeScene"]));
-            // await Facade.executeCommand("GamePreloadResCommand");
-            await Facade.executeCommand("WxLoadSubAllSceneCommand");
+            let retains = ResConfig.retainPrefabs.concat(["prefab/HomeScene", "prefab/WelcomeScene"]);
+            let releaseArr = fileNames.filter(value=>retains.indexOf(value)<0);
+            releaseArr.forEach(value=>Facade.releasePrefab(value, retains));
+            //await Facade.executeCommand("GamePreloadResCommand");
             loadingMediator.updateProgress(1);
+            await Facade.executeCommand("WxLoadSubAllSceneCommand");
             cc.sys.garbageCollect();
             addCount();
             resolve();
