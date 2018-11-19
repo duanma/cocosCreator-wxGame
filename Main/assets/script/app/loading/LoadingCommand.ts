@@ -17,11 +17,21 @@ import {ExcelConfig} from "../../../framework/config/ExcelConfig";
 
 const {ccclass, property} = cc._decorator;
 
+let count = 0;
+function addCount() {
+    count++;
+    if (count >= 2){
+        Facade.executeCommand("LaunchOptionsCommand");
+    }
+}
+
 @ccclass("LoadingCommand")
 export default class LoadingCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async resolve => {
             let loadingMediator = Facade.mediatorOf("WelcomeScene", LoadingMediator);
+            if (!loadingMediator)return;
+            Facade.executeCommand("ToLoginCommand").then(addCount);
             let fileNames = cc.loader.getFileNames("/", cc.Prefab);
             let totalCount = fileNames.length + 10;
             for (let i=0; i<fileNames.length; i++){
@@ -32,11 +42,11 @@ export default class LoadingCommand implements ICommand {
             loadingMediator.updateProgress((fileNames.length +5)/totalCount);
             let releaseArr = fileNames.filter(value=>ResConfig.retainPrefabs.indexOf(value)<0);
             releaseArr.forEach(value=>Facade.releasePrefab(value, ["prefab/HomeScene", "prefab/WelcomeScene"]));
-            // await Facade.executeCommand("GamePreLoadCommand");
-            loadingMediator.updateProgress(1);
+            // await Facade.executeCommand("GamePreloadResCommand");
             await Facade.executeCommand("WxLoadSubAllSceneCommand");
-            await Facade.executeCommand("ToLoginCommand");
+            loadingMediator.updateProgress(1);
             cc.sys.garbageCollect();
+            addCount();
             resolve();
         });
     }
