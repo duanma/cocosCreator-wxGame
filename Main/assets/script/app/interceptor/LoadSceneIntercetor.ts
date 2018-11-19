@@ -44,7 +44,7 @@ export default class LoadSceneIntercetor implements ICommandInterceptor {
                 /** 显示新手引导 */
                 let prefab = await cc.loader.loadResAwait("prefab/newbie", cc.Prefab);
                 let node = cc.instantiate(prefab);
-                let homeNode = Facade.canvasNode.getChildByName("home");
+                let homeNode = Facade.canvasNode.getChildByName("HomeScene");
                 let startGameNode = homeNode.getChildByName("startGame");
                 node.position = startGameNode.position;
                 node.setParent(Facade.canvasNode);

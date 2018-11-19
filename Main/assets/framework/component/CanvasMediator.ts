@@ -10,6 +10,7 @@
 
 
 import Facade from "../facade/Facade";
+import preventExtensions = Reflect.preventExtensions;
 
 const {ccclass, property, menu, executionOrder} = cc._decorator;
 
@@ -21,9 +22,16 @@ let bLaunch = false;
 @executionOrder(-10)
 export default class CanvasMediator extends cc.Component {
 
+    @property(cc.Prefab)
+    scenePrefab:cc.Prefab = null;
+
     async onLoad () {
         // console.log(this);
         Facade.canvasNode = this.node;
+        if (this.scenePrefab){
+            let node = cc.instantiate(this.scenePrefab);
+            node.setParent(this.node);
+        }
         if (!bLaunch){
             let [result] = await Facade.executeCommand("StartupCommand");
             if (result){

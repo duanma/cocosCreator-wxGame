@@ -21,7 +21,7 @@ const {ccclass, property} = cc._decorator;
 export default class LoadingCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async resolve => {
-            let loadingMediator = Facade.mediatorOf("loading", LoadingMediator);
+            let loadingMediator = Facade.mediatorOf("WelcomeScene", LoadingMediator);
             let [resources, urls] = await cc.loader.loadResDirAwait("prefab/", cc.Prefab, function (completeCount, totalCount, item) {
                 loadingMediator.updateProgress(completeCount / totalCount);
             });
