@@ -1,5 +1,7 @@
 declare module cc {
     export class loader{
+        static _resources;
+        static getFileNames(dir:string, type: typeof cc.Asset):Array<string>;
         static async getResAwait(url: string, type?: Function):Promise;
 
         static async loadResAwait(url: string, type: typeof cc.Asset, progressCallback: (completedCount: number, totalCount: number, item: any) => void): Promise;
@@ -57,6 +59,8 @@ declare module wx{
     export function getUserInfo(obj:any);
     export function postMessage(obj:any);
     export function createImage();
+    export function showLoading(obj:any);
+    export function hideLoading();
 
     class SystemInfo {
         brand:string;// 	手机品牌 	1.5.0
@@ -74,6 +78,11 @@ declare module wx{
         fontSizeSetting:number;// 	用户字体大小设置。以“我-设置-通用-字体大小”中的设置为准，单位：px 	1.5.0
         SDKVersion:string;// 	客户端基础库版本
     }
+}
+
+declare module encryptjs{
+    export function encrypt(plaintext:string, password:string, nBits:number):string;
+    export function decrypt(ciphertext:string, password:string, nBits:number):string;
 }
 
 

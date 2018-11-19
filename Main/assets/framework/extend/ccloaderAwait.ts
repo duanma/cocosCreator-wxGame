@@ -58,7 +58,15 @@ async function loadResDir(...args):Promise{
     });
 }
 
+
+function getFileNames(dir:string, type: typeof cc.Asset):Array<string>{
+    let urls = [];
+    cc.loader._resources.getUuidArray(dir, type, urls);
+    return urls;
+}
+
 cc.loader.getResAwait = getRes;
 cc.loader.loadResAwait = loadRes;
 cc.loader.loadResArrayAwait = loadResArray;
 cc.loader.loadResDirAwait = loadResDir;
+cc.loader.getFileNames = getFileNames;

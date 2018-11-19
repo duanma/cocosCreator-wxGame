@@ -11,7 +11,6 @@
 import {World} from "../info/World";
 import {LoginProxy} from "./LoginProxy";
 import LoginServerCommand from "./LoginServerCommand";
-import {GroupConfig} from "../config/GroupConfig";
 import {ICommand} from "../../../framework/facade/ICommand";
 import {wxApi} from "../../../framework/wxApi/wxApi";
 import Facade from "../../../framework/facade/Facade";
@@ -22,7 +21,7 @@ export default class ToLoginCommand implements ICommand {
     async execute (...args):Promise {
         return new Promise(async resolve => {
             if (wxApi.enable){
-                let separationLayer = Facade.addSeparationLayer(GroupConfig.ui, 0);
+                wxApi.showLoading("登陆中...");
                 let proxy = new LoginProxy();
 
                 /** 获取userInfo */
@@ -38,8 +37,8 @@ export default class ToLoginCommand implements ICommand {
 
                 console.log(userInfo, "userInfo");
                 await Facade.executeCommand("LoginServerCommand");
+                wxApi.hideLoading();
                 wx.postMessage({command:"ReadMyInfoCommand", data:{nickName:World.My.nickName, avatarUrl:World.My.avatarUrl, gender:World.My.gender, openId:World.My.openId}});
-                separationLayer.destroy();
                 await Facade.executeCommand("LoadSceneCommand", "HomeScene");
             }else {
                 // await Facade.executeCommand("LoginServerCommand");

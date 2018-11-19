@@ -22,17 +22,22 @@ export default class LoadingCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async resolve => {
             let loadingMediator = Facade.mediatorOf("WelcomeScene", LoadingMediator);
-            let [resources, urls] = await cc.loader.loadResDirAwait("prefab/", cc.Prefab, function (completeCount, totalCount, item) {
-                loadingMediator.updateProgress(completeCount / totalCount);
-            });
+            let fileNames = cc.loader.getFileNames("/", cc.Prefab);
+            let totalCount = fileNames.length + 10;
+            for (let i=0; i<fileNames.length; i++){
+                await cc.loader.loadResAwait(fileNames[i], cc.Prefab);
+                loadingMediator.updateProgress((i+1)/totalCount);
+            }
             await ExcelConfig.loadAllExcel("data/");
-            let releaseArr = urls.filter(value=>ResConfig.retainPrefabs.indexOf(value)<0);
-            // releaseArr.forEach(value=>Facade.releasePrefab(value, ["Prefab/login", "Prefab/home", "Prefab/download"]));
+            loadingMediator.updateProgress((fileNames.length +5)/totalCount);
+            let releaseArr = fileNames.filter(value=>ResConfig.retainPrefabs.indexOf(value)<0);
+            releaseArr.forEach(value=>Facade.releasePrefab(value, ["prefab/HomeScene", "prefab/WelcomeScene"]));
             // await Facade.executeCommand("GamePreLoadCommand");
+            loadingMediator.updateProgress(1);
             await Facade.executeCommand("WxLoadSubAllSceneCommand");
             await Facade.executeCommand("ToLoginCommand");
             cc.sys.garbageCollect();
-            resolve(urls);
+            resolve();
         });
     }
 }

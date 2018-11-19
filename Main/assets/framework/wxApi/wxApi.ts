@@ -187,4 +187,15 @@ export class wxApi {
         });
     }
 
+    static showLoading(title:string = ""){
+        wx.showLoading({
+            title:title,
+            mask:true
+        });
+    }
+
+    static hideLoading(){
+        wx.hideLoading();
+    }
+
 }
