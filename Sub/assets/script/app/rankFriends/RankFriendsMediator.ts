@@ -28,11 +28,8 @@ export default class RankFriendsMediator extends cc.Component {
     topThreeSpriteFrames:[cc.SpriteFrame] = [];
 
 
-    start () {
-        RankFriendItemMediator.topThreeSpriteFrames = this.topThreeSpriteFrames;
-    }
-
     onLoad(){
+        RankFriendItemMediator.topThreeSpriteFrames = this.topThreeSpriteFrames;
         Facade.canvasNode.on(CanvasEvent.domainShow, this.handleDomainShow, this);
         this.myItemMediator.node.active = false;
     }

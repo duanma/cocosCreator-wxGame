@@ -30,6 +30,7 @@ export default class RankGroupMediator extends cc.Component {
     topThreeSpriteFrames:[cc.SpriteFrame] = [];
 
     onLoad(){
+        RankFriendItemMediator.topThreeSpriteFrames = this.topThreeSpriteFrames;
         Facade.canvasNode.on(CanvasEvent.domainShow, this.handleDomainShow, this);
         this.myItemMediator.node.active = false;
     }
@@ -41,10 +42,6 @@ export default class RankGroupMediator extends cc.Component {
 
     handleDomainShow(event){
         this.updateData(RankGroupMediator.groupOrderData);
-    }
-
-    start () {
-        RankFriendItemMediator.topThreeSpriteFrames = this.topThreeSpriteFrames;
     }
 
 
