@@ -104,10 +104,10 @@ export default class StartupCommand implements ICommand {
 
 
             /** 读取胡萝卜数量 */
-            World.My.carrotNum = LocalStorage.getNumber(localStorageKeys.carrotNumKey) || 0;
-            World.My.carrotNum += 200;
+            World.My.diamond = LocalStorage.getNumber(localStorageKeys.carrotNumKey) || 0;
+            World.My.diamond += 200;
 
-            console.log(World.My.carrotNum, "World.My.carrotNum=========");
+            console.log(World.My.diamond, "World.My.diamond=========");
 
             /** 后台切入切出回调---引擎已经做了暂停游戏主循环。包含：游戏逻辑，渲染，事件处理，背景音乐和所有音效。所以我们一般情况下不需要做什么 */
             /*cc.game.on(cc.game.EVENT_SHOW, function () {

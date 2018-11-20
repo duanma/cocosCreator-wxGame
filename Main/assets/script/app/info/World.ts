@@ -40,7 +40,7 @@ export module World{
         /** 皮肤id */
         export let skinId:number = 1;
         /** 道具数量 */
-        export let carrotNum:number = 0;
+        export let diamond:number = 0;
 
         /** 购买过的皮肤 */
         export let ownedSkins:[number] = [1];

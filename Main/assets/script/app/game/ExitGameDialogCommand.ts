@@ -30,8 +30,8 @@ export default class ExitGameDialogCommand implements ICommand {
             if (res == "right"){
                 /*let gameMediator = Facade.mediatorOf<GameMediator>("game", GameMediator);
                 let score = gameMediator.model.score;
-                let carrotNum = gameMediator.model.carrotNum;
-                Facade.executeCommand("GameUploadScoreCommand", score, carrotNum);
+                let diamond = gameMediator.model.diamond;
+                Facade.executeCommand("GameUploadScoreCommand", score, diamond);
                 await Facade.executeCommand("ToHomeCommand");*/
             }
             resolve();

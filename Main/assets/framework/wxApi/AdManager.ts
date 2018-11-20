@@ -219,8 +219,8 @@ export class AdManager {
         }
     }
 
-    static async showVideoAwait():Promise{
-        return new Promise((resolve, reject) => {
+    static async showVideoAwait():Promise<AdVideoResult>{
+        return new Promise<AdVideoResult>((resolve, reject) => {
             this.showVideo(function (res) {
                 resolve(res);
             })

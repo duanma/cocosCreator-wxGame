@@ -16,8 +16,31 @@ import HttpProtocol from "../../../framework/http/HttpProtocol";
 import {wxApi} from "../../../framework/wxApi/wxApi";
 import {HttpClient} from "../../../framework/http/HttpClient";
 import Facade from "../../../framework/facade/Facade";
+import {HttpOption} from "../../../framework/http/HttpOption";
 
 export default class Network {
+
+    static async post(protocol:HttpProtocol, httpOption?:HttpOption):Promise{
+        return new Promise(async(resolve, reject) => {
+            try {
+                let data = await HttpClient.post(protocol);
+                resolve(data);
+            }catch (e) {
+                /** not login */
+                if(e.status == -2){
+                    try {
+                        await Facade.executeCommand("LoginServerCommand");
+                        let data = await Network.post(protocol, httpOption);
+                        resolve(data);
+                    }catch (e) {
+                        reject();
+                    }
+                }else {
+                    reject();
+                }
+            }
+        });
+    }
 
     static async login():Promise{
         return new Promise(async (resolve, reject) => {
@@ -45,7 +68,7 @@ export default class Network {
             request["headUrl"] = World.My.avatarUrl;
             request["city"] = World.My.city;
             protocol.request = request;
-            let data = await HttpClient.post(protocol);
+            let data = await Network.post(protocol);
             /** 设置玩家信息 */
             World.My.playerId = data["playerId"];
             World.My.openId = data["openid"];
@@ -53,7 +76,7 @@ export default class Network {
             World.My.todayAdd = data["todayAdd"];
             World.My.lastAddTime = data["lastAddTime"];
             World.My.bestScore = data["bestRecord"];
-            World.My.carrotNum = data['diamond'];
+            World.My.diamond = data['diamond'];
             resolve();
         });
     }
@@ -65,24 +88,8 @@ export default class Network {
             let protocol = new HttpProtocol();
             protocol.uri = "/game/addRecord";
             protocol.request = {gameId:AppConfig.GameID, key:AppConfig.rankKey, score:score};
-            try {
-                await HttpClient.post(protocol);
-                resolve();
-            }catch (e) {
-                if(e.status == -2){
-                    console.log("玩家没有登陆");
-                    try {
-                        await Facade.executeCommand("LoginServerCommand");
-                        await this.uploadScore(score);
-                    }catch (e) {
-                        console.error("上传分数===>登陆失败");
-                        reject();
-                    }
-                }else {
-                    console.error("http /game/addRecord", e.status);
-                    reject();
-                }
-            }
+            await Network.post(protocol);
+            resolve();
         });
     }
 
@@ -92,7 +99,7 @@ export default class Network {
             let protocol = new HttpProtocol();
             protocol.uri = "/game/mall/buy";
             protocol.request = {id:itemId, num:num};
-            await HttpClient.post(protocol);
+            await Network.post(protocol);
             resolve();
         });
     }
@@ -101,7 +108,7 @@ export default class Network {
         return new Promise<Array>(async(resolve, reject) => {
             let protocol = new HttpProtocol();
             protocol.uri = "/game/user/items";
-            let list = <Array>await HttpClient.post(protocol);
+            let list = <Array>await Network.post(protocol);
             resolve(list);
         });
     }
@@ -111,8 +118,48 @@ export default class Network {
             let protocol = new HttpProtocol();
             protocol.uri = "/game/getTotalRank";
             protocol.request = {gameId: AppConfig.GameID, key:AppConfig.rankKey};
-            let {list} = await HttpClient.post(protocol);
+            let {list} = await Network.post(protocol);
             resolve(list);
+        });
+    }
+
+    static async currentIllustration():Promise<number>{
+        return new Promise<number>(async(resolve, reject) => {
+            let protocol = new HttpProtocol();
+            protocol.uri = "/game/currentIllustration";
+            protocol.request = {};
+            let {id} = await Network.post(protocol);
+            resolve(id);
+        });
+    }
+
+    static async rewardIllustration():Promise<number>{
+        return new Promise<number>(async(resolve, reject) => {
+            let protocol = new HttpProtocol();
+            protocol.uri = "/game/rewardIllustration";
+            protocol.request = {};
+            let data = await Network.post(protocol);
+            resolve();
+        });
+    }
+
+    static async addDiamond(add:number):Promise<number>{
+        return new Promise<number>(async (resolve, reject) => {
+            let protocol = new HttpProtocol();
+            protocol.uri = "/game/user/addDiamond";
+            protocol.request = {num:add};
+            let {diamond} = await Network.post(protocol);
+            resolve(diamond);
+        });
+    }
+
+    static async expendDiamond(expend:number):Promise<number>{
+        return new Promise<number>(async (resolve, reject) => {
+            let protocol = new HttpProtocol();
+            protocol.uri = "/game/user/expendDiamond";
+            protocol.request = {num:expend};
+            let {diamond} = await Network.post(protocol);
+            resolve(diamond);
         });
     }
 }
