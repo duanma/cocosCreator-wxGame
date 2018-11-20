@@ -164,7 +164,7 @@ export class AdManager {
             console.log("激励视频 广告加载失败");
             console.log(err)
         });
-        this.videoAdInstance.close(res => {
+        this.videoAdInstance.onClose(res => {
             // 用户点击了【关闭广告】按钮
             // 小于 2.1.0 的基础库版本，res 是一个 undefined
             let completed = AdVideoResult.finishClose;
@@ -194,25 +194,17 @@ export class AdManager {
         self.videoCallback = callback;
         if (self.videoAdInstance){
             self.videoLoadCount++;
-            self.videoAdInstance.show()
-                .catch(err => {
-                    console.log("videoAd显示失败");
-                    console.log(err);
-                    self.videoAdInstance.load()
-                        .then(() => {
-                            if (self.videoLoadCount > 3){
-                                self.videoLoadCount = 0;
-                                self.showVideoResult(AdVideoResult.multiLoadFail);
-                            } else {
-                                self.showVideo(callback);
-                            }
-                        })
-                        .catch(err=>{
-                            console.log("videoAd加载失败");
-                            console.log(err);
-                            self.showVideoResult(AdVideoResult.loadFail);
-                        })
-                });
+            self.videoAdInstance.load()
+                .then(()=>self.videoAdInstance.show())
+                .catch(err=>{
+                    console.log(err.errMsg, "loadAd fail???");
+                    if (self.videoLoadCount > 3){
+                        self.videoLoadCount = 0;
+                        self.showVideoResult(AdVideoResult.multiLoadFail);
+                    } else {
+                        self.showVideo(callback);
+                    }
+                })
         }else {
             console.log("视频广告未初始化");
             self.showVideoResult(AdVideoResult.notInit);
@@ -221,6 +213,7 @@ export class AdManager {
 
     static async showVideoAwait():Promise<AdVideoResult>{
         return new Promise<AdVideoResult>((resolve, reject) => {
+
             this.showVideo(function (res) {
                 resolve(res);
             })
