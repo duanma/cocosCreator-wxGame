@@ -43,8 +43,8 @@ export class AdManager {
         if (this.bannerAdunitIdMap[positionName]){
             this.destoryBanner(positionName);
         }
-        if (typeof (style.bottom) != "undefined" && typeof (style.height) != "undefined"){
-            style.top = window.innerHeight - style.bottom - style.height
+        if (typeof (style.bottom) != "undefined"){
+            style.top = window.innerHeight - style.bottom;
         }
 
         if (style.width < 300){
@@ -59,6 +59,9 @@ export class AdManager {
             adUnitId: adunitId,
             style: style
         });
+        bannerAd.onError(res=>{
+            console.log(res.errMsg, res.errCode, "banner onError");
+        });
         bannerAd.onLoad(() => {
             console.log('bannerAd.onLoad['+positionName+'] 广告加载成功');
         });
@@ -67,7 +70,7 @@ export class AdManager {
             bannerAd.style.left = style.left;
             bannerAd.style.width = res.width;
             bannerAd.style.height = res.height;
-            if (typeof (style.bottom) != "undefined" && typeof (style.height) != "undefined"){
+            if (typeof (style.bottom) != "undefined"){
                 let {screenHeight} = wx.getSystemInfoSync();
                 bannerAd.style.top = screenHeight - style.bottom - res.height
             }else {
