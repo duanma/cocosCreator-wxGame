@@ -10,6 +10,8 @@
 
 
 import {Music} from "../../../framework/audio/Music";
+import Facade from "../../../framework/facade/Facade";
+import View from "../../../framework/component/View";
 
 const {ccclass, property} = cc._decorator;
 
@@ -25,6 +27,18 @@ export default class HomeMediator extends cc.Component {
 
     start () {
         this.updateSound();
+        let checkEventHandler = new cc.Component.EventHandler();
+        checkEventHandler.target = this.node; //这个 node 节点是你的事件处理代码组件所属的节点
+        checkEventHandler.component = "HomeMediator";
+        checkEventHandler.handler = "soundToggleCallback";
+        checkEventHandler.customEventData = "";
+
+        this.soundToggle.checkEvents.push(checkEventHandler);
+    }
+
+    soundToggleCallback(event, data){
+        View.executeClickSoundCommand(event, data);
+        Facade.executeCommand("SwitchAudioCommand", event);
     }
 
     updateSound(){

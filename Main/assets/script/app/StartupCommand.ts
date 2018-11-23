@@ -30,6 +30,7 @@ import {Interceptor} from "../../framework/interceptor/Interceptor";
 import OpenViewInterceptor from "./interceptor/OpenViewInterceptor";
 import CloseViewInterceptor from "./interceptor/CloseViewInterceptor";
 import LoadSceneIntercetor from "./interceptor/LoadSceneIntercetor";
+import {MusicPaths} from "./config/MusicPaths";
 
 const {ccclass, property} = cc._decorator;
 
@@ -40,7 +41,8 @@ export default class StartupCommand implements ICommand {
             console.log(AppConfig.gameName);
             console.log(AppConfig.version);
             LocalStorage.prefix = AppConfig.GameID;
-            let physicsManager = cc.director.getPhysicsManager();
+            /**  物理引擎配置 */
+            /*let physicsManager = cc.director.getPhysicsManager();
             physicsManager.enabled = true;
             physicsManager.enabledAccumulator = false;
 
@@ -50,12 +52,13 @@ export default class StartupCommand implements ICommand {
             // cc.PhysicsManager.DrawBits.e_aabbBit |
             //cc.PhysicsManager.DrawBits.e_jointBit |
             //cc.PhysicsManager.DrawBits.e_shapeBit
-            ;
+            ;*/
 
-            let manager = cc.director.getCollisionManager();
+            /** 碰撞检测配置 */
+            /*let manager = cc.director.getCollisionManager();
             manager.enabled = false;
             // manager.enabledDebugDraw = true;
-            // manager.enabledDrawBoundingBox = true;
+            // manager.enabledDrawBoundingBox = true;*/
 
             console.log(ext.isIphoneX, "isIphoneX===>");
             console.log(ext.isLandscape, "isLandscape===>");
@@ -98,6 +101,7 @@ export default class StartupCommand implements ICommand {
 
             /** 读取声音配置 */
             Music.init();
+            Music.setBgm(MusicPaths.HomeBg);
 
             console.log(Music.getMusicOpen(), "=================getMusicOpen");
             console.log(Music.sfxOpen, "===============sfxOpen");

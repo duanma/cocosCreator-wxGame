@@ -33,13 +33,20 @@ export default class LoadingCommand implements ICommand {
             if (!loadingMediator)return;
             Facade.executeCommand("ToLoginCommand").then(addCount);
             let fileNames = cc.loader.getFileNames("/", cc.Prefab);
-            let totalCount = fileNames.length + 10;
+            let totalCount = fileNames.length + 30;
+            let promises = [];
+
             for (let i=0; i<fileNames.length; i++){
-                await cc.loader.loadResAwait(fileNames[i], cc.Prefab);
-                loadingMediator.updateProgress((i+1)/totalCount);
+                promises.push(cc.loader.loadResAwait(fileNames[i], cc.Prefab));
+            }
+            let num = 0;
+            for (const promise of promises){
+                await promise;
+                num++;
+                loadingMediator.updateProgress((num+1)/totalCount);
             }
             await ExcelConfig.loadAllExcel("data/");
-            loadingMediator.updateProgress((fileNames.length +5)/totalCount);
+            loadingMediator.updateProgress((fileNames.length +15)/totalCount);
             let retains = ResConfig.retainPrefabs.concat(["prefab/HomeScene", "prefab/WelcomeScene"]);
             let releaseArr = fileNames.filter(value=>retains.indexOf(value)<0);
             releaseArr.forEach(value=>Facade.releasePrefab(value, retains));

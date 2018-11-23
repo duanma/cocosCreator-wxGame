@@ -23,9 +23,8 @@ export default class LaunchOptionsCommand implements ICommand {
                 /**  检查启动参数 */
                 let launchObj = wx.getLaunchOptionsSync();
                 console.log(launchObj, "launchObj");
-                let isLaunch = launchObj['isLaunch'];
                 let query = launchObj['query'];
-                if (isLaunch && typeof query['type'] == "string"){
+                if (typeof query['type'] == "string"){
                     await Facade.executeCommand("LoadSceneCommand", "HomeScene");
                 }else {
                     await Facade.executeCommand("LoadSceneCommand", "HomeScene");
