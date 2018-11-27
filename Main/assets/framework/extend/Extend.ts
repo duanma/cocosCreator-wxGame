@@ -89,6 +89,13 @@ export module ext{
     export function showRichText(richText:cc.RichText) {
         richText.node.children.forEach(value => value.active = true);
     }
+
+    /** 并行执行promise */
+    export async function concurrentExecute(list:Array<Promise>) {
+        for (let promise of list){
+            await promise;
+        }
+    }
 }
 
 
