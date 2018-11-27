@@ -111,13 +111,13 @@ export class wxApi {
                 title:title,
                 imageUrl:imageUrl,
                 query:query,
-                success:function () {
-                    console.log("=====分享成功///////////////////");
-                    resolve();
+                success:function (res) {
+                    console.log("=====分享成功///////////////////", res);
+                    resolve(res);
                 },
-                fail:function () {
-                    console.log("=====分享失败///////////////////");
-                    reject();
+                fail:function (res) {
+                    console.log("=====分享失败///////////////////", res);
+                    reject(res);
                 }
             })
         }));
