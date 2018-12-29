@@ -43,7 +43,7 @@ export default class LoadFriendCloudStorageCommand implements ICommand {
                     });
                     /** 对数据排序 */
                     let orderData = friendData.sort(function (a, b) {
-                        return a.wxStorageFormat.score < b.wxStorageFormat.score;
+                        return b.wxStorageFormat.score - a.wxStorageFormat.score;
                     });
                     World.friendOrderData = orderData;
                     // console.log(orderData, "Wx sub orderData===>");
