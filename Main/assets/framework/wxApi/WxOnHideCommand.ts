@@ -16,11 +16,6 @@ const {ccclass, property} = cc._decorator;
 @ccclass("WxOnHideCommand")
 export default class WxOnHideCommand implements ICommand {
     async execute (...args):Promise{
-        return new Promise(resolve => {
-            wx.onHide(function (res) {
-            });
-            resolve();
-        });
 
     }
 }

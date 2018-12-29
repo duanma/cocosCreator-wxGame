@@ -36,12 +36,41 @@ export class wxApi {
         console.log("wx.getLaunchOptionsSync", boj);
 
         wx.setKeepScreenOn({keepScreenOn:true});
-        wx.showShareMenu({withShareTicket: false});
+        wx.showShareMenu({withShareTicket: true});
 
+        wx.onShow(function (res){
+            Facade.executeCommand("WxOnShowCommand", res);
+        });
 
-        Facade.executeCommand("WxOnShowCommand");
-        Facade.executeCommand("WxOnHideCommand");
-        Facade.executeCommand("WxOnShareAppMessageCommand");
+        wx.onHide(function (res) {
+            Facade.executeCommand("WxOnHideCommand", res);
+        });
+
+        wx.onShareAppMessage(function (res) {
+            Facade.executeCommand("WxOnShareAppMessageCommand", res);
+        });
+    }
+
+    /** 后台时间 */
+    static async backgroundTime():Promise<number>{
+        return new Promise<number>(resolve => {
+            let hideTime = 0;
+            let onHide = function (res) {
+                hideTime = new Date().getTime();
+                console.log("backgroundTime====>onHide", hideTime);
+            };
+
+            let onShow = function (res) {
+                wx.offHide(onHide);
+                wx.offShow(onShow);
+                let currentTime = new Date().getTime();
+                console.log("backgroundTime====>onShow", currentTime);
+                resolve(currentTime-hideTime);
+            };
+
+            wx.onHide(onHide);
+            wx.onShow(onShow);
+        });
     }
 
 
@@ -196,6 +225,27 @@ export class wxApi {
 
     static hideLoading(){
         wx.hideLoading();
+    }
+
+    static async setUserCloudStorage(list:Array):Promise{
+        return new Promise((resolve, reject) => {
+            wx.setUserCloudStorage({
+                KVDataList:list,
+                success:function (res) {
+                    resolve(res);
+                },
+                fail:function (res) {
+                    console.log(res, "setUserCloudStorage fail");
+                    reject(res);
+                }
+            });
+        });
+    }
+
+    static async setMyScoreCloudStorage(key:string, score:number){
+        let list = [];
+        list.push({key:key, value:JSON.stringify({score:score, update_time:Math.round(new Date() / 1000)})});
+        return this.setUserCloudStorage(list);
     }
 
 }

@@ -8,14 +8,21 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-
-import {ICommand} from "../facade/ICommand";
+import {ICommand} from "../../../framework/facade/ICommand";
+import {wxApi} from "../../../framework/wxApi/wxApi";
 
 const {ccclass, property} = cc._decorator;
 
-@ccclass("WxOnShowCommand")
-export default class WxOnShowCommand implements ICommand {
-    async execute (...args):Promise{
+@ccclass('ShareCallbackCommand')
+export default class ShareCallbackCommand implements ICommand {
 
+    async execute (...args):Promise<boolean>{
+        let flag = false;
+        if (wxApi.enable){
+            let backgroundTime = await wxApi.backgroundTime();
+            flag = Math.floor(backgroundTime/1000) > 3;
+        }
+
+        return flag;
     }
 }
