@@ -20,9 +20,9 @@ export default class UpdateMyScoreCommand implements ICommand {
 
     async execute (...args):Promise{
         return new Promise((resolve, reject) => {
+            OverMediator.myScore = args[0];
             let mediator = Facade.mediatorOf("top", GameMediator);
             if (mediator){
-                OverMediator.myScore = args[0];
                 mediator.setMyScore(args[0]);
             }
         });

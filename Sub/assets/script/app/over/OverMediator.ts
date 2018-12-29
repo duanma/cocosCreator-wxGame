@@ -11,6 +11,7 @@
 import OverRankItemMediator from "./OverRankItemMediator";
 import {World} from "../../info/World";
 import {ext} from "../../facade/Extend";
+import Facade, {CanvasEvent} from "../../../../../../OneTouchDrawing/OneTouchDrawingSub/assets/script/facade/Facade";
 
 const {ccclass, property} = cc._decorator;
 
@@ -31,6 +32,18 @@ export default class OverMediator extends cc.Component {
     otherDataList = [];
 
     maxScore = 0;
+
+    onLoad(){
+        Facade.canvasNode.on(CanvasEvent.domainShow, this.handleDomainShow, this);
+    }
+
+    onDestroy(){
+        Facade.canvasNode.off(CanvasEvent.domainShow, this.handleDomainShow, this);
+    }
+
+    handleDomainShow(event){
+        this.start();
+    }
 
     start () {
         /** 取数据 */
