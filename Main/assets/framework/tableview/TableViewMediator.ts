@@ -89,6 +89,38 @@ export default class TableViewMediator extends cc.Component {
         itemNode.y = -height - itemHeightHalf;
         itemNode.setParent(content);
         this.list.push(itemNode);
+
+        /** 延迟判断 */
+        let self = this;
+        this.scheduleOnce(function () {
+            self._adjustList();
+        }, 0.1);
+    }
+
+    _adjustList(){
+        let viewSize = this.scrollView.node.getContentSize();
+        let content = this.scrollView.content;
+        let itemHeightHalf = this.itemHeight/2;
+        let height = this.marginTop + (this.itemHeight + this.margin) * this.list.length  - this.margin;
+        while (height < viewSize.height + this.itemHeight){
+            let node = cc.instantiate(this.itemPrefab);
+            node.active = false;
+            node.x = 0;
+            node.y = -height - itemHeightHalf;
+            node.setParent(content);
+            this.list.push(node);
+            height += this.itemHeight + this.margin;
+            if (this.data.length >= this.list.length){
+                let index = this.list.length-1;
+                let value =this.list[index];
+                value.active = true;
+                this.updateItem(value, index);
+            }
+        }
+        if (this.data.length > 0){
+            let num = Math.ceil((viewSize.height - this.marginTop - this.marginBottom + this.margin) / (this.itemHeight+this.margin));
+            this.firstIndexMax = this.data.length - num - 1;
+        }
     }
 
     setData(data:Array){
