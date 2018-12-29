@@ -65,19 +65,24 @@ export module ext{
     export const isIphoneX = _isIphoneX;
 
 
-    export function wxCreateImageToSprite(sprite,url){
-        let node = sprite.node;
-        let size = {width:node.width , height:node.height};
-        let image = wx.createImage();
-        image.onload = function () {
-            let texture = new cc.Texture2D();
-            texture.initWithElement(image);
-            texture.handleLoadedTexture();
-            sprite.spriteFrame = new cc.SpriteFrame(texture);
-            node.width = size.width;
-            node.height = size.height;
-        };
-        image.src = url;
+    export async function wxCreateImageToSprite(sprite,url):Promise{
+        return new Promise((resolve, reject) => {
+            let node = sprite.node;
+            let size = {width:node.width , height:node.height};
+            let image = wx.createImage();
+            image.onload = function () {
+                if (sprite && sprite.node && sprite.node.isValid){
+                    let texture = new cc.Texture2D();
+                    texture.initWithElement(image);
+                    texture.handleLoadedTexture();
+                    sprite.spriteFrame = new cc.SpriteFrame(texture);
+                    node.width = size.width;
+                    node.height = size.height;
+                    resolve();
+                }
+            };
+            image.src = url;
+        });
     }
 
     export function randomInteger(min:number, max:number) {
@@ -95,6 +100,11 @@ export module ext{
         for (let promise of list){
             await promise;
         }
+    }
+
+    /** 是否同一天 */
+    export function isSameDay(date1:Date, date2:Date) {
+        return date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate();
     }
 }
 

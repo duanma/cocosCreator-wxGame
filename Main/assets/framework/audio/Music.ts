@@ -12,21 +12,21 @@ import {LocalStorage} from "../persistence/LocalStorage";
 
 const {ccclass, property} = cc._decorator;
 
-const musicOpenKey = "musicOpen";
-const sfxOpenKey = "sfxOpen";
+const musicCloseKey = "musicOpen";
+const sfxCloseKey = "sfxOpen";
 
 export class Music{
 
     /** 读取本地持久化－－初始化 */
     static init(){
-        Music.setMusicOpen(LocalStorage.getBoolean(musicOpenKey));
-        Music.sfxOpen = LocalStorage.getBoolean(sfxOpenKey);
+        Music.setMusicOpen(!LocalStorage.getBoolean(musicCloseKey));
+        Music.sfxOpen = !LocalStorage.getBoolean(sfxCloseKey);
     }
 
     /** 本地持久化 */
     static persistence(){
-        LocalStorage.setBoolean(musicOpenKey, this._musicOpen);
-        LocalStorage.setBoolean(sfxOpenKey, this.sfxOpen);
+        LocalStorage.setBoolean(musicCloseKey, !this._musicOpen);
+        LocalStorage.setBoolean(sfxCloseKey, !this.sfxOpen);
     }
 
     /** 设置背景音乐音量 */
