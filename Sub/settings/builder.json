@@ -1,17 +1,12 @@
 {
-  "appKey": "",
-  "appSecret": "",
   "encryptJs": true,
   "excludeScenes": [],
   "fb-instant-games": {},
-  "includeAnySDK": false,
   "includeSDKBox": false,
   "inlineSpriteFrames": true,
   "inlineSpriteFrames_native": true,
-  "jailbreakPlatform": false,
   "md5Cache": false,
   "mergeStartScene": false,
-  "oauthLoginServer": "",
   "optimizeHotUpdate": false,
   "orientation": {
     "landscapeLeft": true,
@@ -20,7 +15,6 @@
     "upsideDown": false
   },
   "packageName": "org.cocos2d.wx-sub-test",
-  "privateKey": "",
   "qqplay": {
     "orientation": "portrait"
   },
@@ -44,5 +38,12 @@
     "host": "",
     "skipRecord": false,
     "recordPath": ""
-  }
+  },
+  "baidugame": {
+    "appid": "testappid",
+    "orientation": "portrait",
+    "REMOTE_SERVER_ROOT": "",
+    "subContext": ""
+  },
+  "appBundle": false
 }
