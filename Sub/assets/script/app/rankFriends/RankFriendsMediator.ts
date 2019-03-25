@@ -24,12 +24,7 @@ export default class RankFriendsMediator extends cc.Component {
     @property(TableViewMediator)
     tableViewMediator:TableViewMediator = null;
 
-    @property({type:cc.SpriteFrame})
-    topThreeSpriteFrames:[cc.SpriteFrame] = [];
-
-
     onLoad(){
-        RankFriendItemMediator.topThreeSpriteFrames = this.topThreeSpriteFrames;
         Facade.canvasNode.on(CanvasEvent.domainShow, this.handleDomainShow, this);
         this.myItemMediator.node.active = false;
     }
@@ -44,11 +39,14 @@ export default class RankFriendsMediator extends cc.Component {
 
 
     updateData(orderData:Array){
-        this.tableViewMediator.setData(orderData);
-        for(let i in orderData){
-            if (orderData[i]["openid"] == World.My.openId){
+        let newData = orderData.slice(0);
+        newData.forEach((value, index) => value['dividing'] = index < orderData.length-1);
+        this.tableViewMediator.setData(newData);
+        for(let i in newData){
+            if (newData[i]["openid"] == World.My.openId){
                 this.myItemMediator.node.active = true;
-                this.myItemMediator.upadteItem(orderData[i], parseInt(i));
+                this.myItemMediator.upadteItem(newData[i], parseInt(i));
+                this.myItemMediator.dividingLineNode.active = false;
                 break;
             }
         }

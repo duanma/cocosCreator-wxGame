@@ -11,15 +11,15 @@
 
 import {ext} from "../../facade/Extend";
 import {WxStorageFormat} from "../../storage/WxStorageFormat";
-import {ITableItem} from "../../tableview/ITableItem";
+import AbstractTableItem from "../../tableview/AbstractTableItem";
 
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class RankFriendItemMediator extends cc.Component implements ITableItem {
+export default class RankFriendItemMediator extends AbstractTableItem {
 
-    @property({type:cc.Sprite})
-    bgSprite:cc.Sprite = null;
+    @property(cc.Node)
+    dividingLineNode:cc.Node = null;
 
     @property({type:cc.Label})
     rankNumLabel:cc.Label = null;
@@ -36,16 +36,18 @@ export default class RankFriendItemMediator extends cc.Component implements ITab
     @property({type:cc.Sprite})
     topThreeSprite:cc.Sprite = null;
 
-    static topThreeSpriteFrames:[cc.SpriteFrame] = [];
+    @property(cc.SpriteFrame)
+    topThreeSpriteFrames:[cc.SpriteFrame] = [];
 
     upadteItem(data:any, index:number){
         // console.log(data, "WxSub=======>updateItem");
         // console.log(typeof index, "====index");
+        if (typeof data != "object")return;
         if (index >= 0 && index <=2){
             this.topThreeSprite.node.active = true;
             this.rankNumLabel.node.active = false;
 
-            this.topThreeSprite.spriteFrame = RankFriendItemMediator.topThreeSpriteFrames[index];
+            this.topThreeSprite.spriteFrame = this.topThreeSpriteFrames[index];
         } else {
             this.topThreeSprite.node.active = false;
             this.rankNumLabel.node.active = true;
@@ -58,8 +60,6 @@ export default class RankFriendItemMediator extends cc.Component implements ITab
 
         this.scoreLabel.string = (<WxStorageFormat>(data.wxStorageFormat)).score.toString();
 
-        if (this.bgSprite){
-            this.bgSprite.node.active = index%2 == 0;
-        }
+        this.dividingLineNode.active = !!data.dividing;
     }
 }

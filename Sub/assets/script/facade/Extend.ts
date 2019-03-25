@@ -66,16 +66,18 @@ export module ext{
 
 
     export function wxCreateImageToSprite(sprite,url){
-        var node = sprite.node;
-        var size = {width:node.width , height:node.height};
+        let node = sprite.node;
+        let size = {width:node.width , height:node.height};
         let image = wx.createImage();
         image.onload = function () {
-            let texture = new cc.Texture2D();
-            texture.initWithElement(image);
-            texture.handleLoadedTexture();
-            sprite.spriteFrame = new cc.SpriteFrame(texture);
-            node.width = size.width;
-            node.height = size.height;
+            if (sprite && sprite.node && sprite.node.isValid){
+                let texture = new cc.Texture2D();
+                texture.initWithElement(image);
+                texture.handleLoadedTexture();
+                sprite.spriteFrame = new cc.SpriteFrame(texture);
+                node.width = size.width;
+                node.height = size.height;
+            }
         };
         image.src = url;
     }

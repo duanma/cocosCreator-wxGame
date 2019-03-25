@@ -11,8 +11,8 @@
 
 
 
-import {ICommand} from "./ICommand";
 import {ext} from "./Extend";
+import {ICommand} from "./ICommand";
 
 /** canvas事件 */
 export enum CanvasEvent {
@@ -21,9 +21,9 @@ export enum CanvasEvent {
 
 export default class Facade {
 
-    static mediatorOf<T>(nodeName:string, type: {prototype: T}, referenceNode?: cc.Node): T;
+    static findComponent<T>(nodeName:string, type: {prototype: T}, referenceNode?: cc.Node): T;
 
-    static  mediatorOf(nodeName:string, type, referenceNode?: cc.Node){
+    static  findComponent(nodeName:string, type, referenceNode?: cc.Node){
         referenceNode = referenceNode || this.canvasNode;
         let node = cc.find(nodeName, referenceNode);
         if (node){

@@ -11,7 +11,7 @@
 import OverRankItemMediator from "./OverRankItemMediator";
 import {World} from "../../info/World";
 import {ext} from "../../facade/Extend";
-import Facade, {CanvasEvent} from "../../../../../../OneTouchDrawing/OneTouchDrawingSub/assets/script/facade/Facade";
+import Facade, {CanvasEvent} from "../../facade/Facade";
 
 const {ccclass, property} = cc._decorator;
 

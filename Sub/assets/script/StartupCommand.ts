@@ -18,20 +18,22 @@ export default class StartupCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise((resolve, reject) => {
             console.log(cc.game, "game===");
-            wx.onMessage( data => {
-                console.log("WxSub wx.onMessage===>", data);
-                if (data.event == "viewport"){
-                    console.log("WxSub===>viewport!!!");
-                }else {
-                    let command = data.command;
-                    let param = data.data;
-                    if (param){
-                        Facade.executeCommand(command, param);
+            if (typeof wx != "undefined"){
+                wx.onMessage( data => {
+                    console.log("WxSub wx.onMessage===>", data);
+                    if (data.event == "viewport"){
+                        console.log("WxSub===>viewport!!!");
                     }else {
-                        Facade.executeCommand(command);
+                        let command = data.command;
+                        let param = data.data;
+                        if (param){
+                            Facade.executeCommand(command, param);
+                        }else {
+                            Facade.executeCommand(command);
+                        }
                     }
-                }
-            });
+                });
+            }
             resolve(true);
         });
     }

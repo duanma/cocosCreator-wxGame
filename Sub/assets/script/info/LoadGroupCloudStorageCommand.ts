@@ -54,13 +54,13 @@ export default class LoadGroupCloudStorageCommand implements ICommand {
                     let sceneName = cc.director.getScene().name;
                     switch (sceneName){
                         case "GroupRankScene":
-                            let rankMediator = Facade.mediatorOf<RankGroupMediator>("rankGroup", RankGroupMediator);
+                            let rankMediator = Facade.findComponent<RankGroupMediator>("rankGroup", RankGroupMediator);
                             if (rankMediator){
                                 rankMediator.updateData(orderData);
                             }
                             break;
                         case "GameScene":
-                            let gameMediator = Facade.mediatorOf<GameMediator>("top", GameMediator);
+                            let gameMediator = Facade.findComponent<GameMediator>("top", GameMediator);
                             gameMediator.updateFirendData();
                             break;
                     }
