@@ -13,7 +13,6 @@ import {ICommand} from "../facade/ICommand";
 import Facade from "../facade/Facade";
 import LifeCycle from "../component/LifeCycle";
 import DialogMediator from "./DialogMediator";
-import EventEmitter from "../component/EventEmitter";
 
 const {ccclass, property} = cc._decorator;
 
@@ -40,7 +39,7 @@ export default class ShowDialogCommand implements ICommand {
             // mediator.content.node.children.forEach(value => value.active = true);
 
             try {
-                let res = await node.onceAwait(EventEmitter.type);
+                let res = await node.onceAwait("clickButton");
                 resolve(res);
             } catch (e) {
                 reject(e);

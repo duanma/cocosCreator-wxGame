@@ -10,15 +10,15 @@
 
 
 import Facade from "../facade/Facade";
-import preventExtensions = Reflect.preventExtensions;
 
-const {ccclass, property, menu, executionOrder} = cc._decorator;
+const {ccclass, property, menu, executionOrder, requireComponent} = cc._decorator;
 
 let bLaunch = false;
 
 
 @ccclass
 @menu("自定义/CanvasMediator")
+@requireComponent(cc.Canvas)
 @executionOrder(-10)
 export default class CanvasMediator extends cc.Component {
 

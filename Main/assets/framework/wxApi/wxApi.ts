@@ -10,6 +10,7 @@
 
 
 import Facade from "../facade/Facade";
+import getSetting = wx.getSetting;
 
 const {ccclass, property} = cc._decorator;
 
@@ -19,6 +20,8 @@ if (typeof wx != "undefined"){
     wxplatform = true;
     systemInfo = wx.getSystemInfoSync();
 }
+
+let hideTime = 0;
 
 export class wxApi {
     static enable = wxplatform;
@@ -43,6 +46,7 @@ export class wxApi {
         });
 
         wx.onHide(function (res) {
+            hideTime = new Date().getTime();
             Facade.executeCommand("WxOnHideCommand", res);
         });
 
@@ -54,21 +58,14 @@ export class wxApi {
     /** 后台时间 */
     static async backgroundTime():Promise<number>{
         return new Promise<number>(resolve => {
-            let hideTime = 0;
-            let onHide = function (res) {
-                hideTime = new Date().getTime();
-                console.log("backgroundTime====>onHide", hideTime);
-            };
 
             let onShow = function (res) {
-                wx.offHide(onHide);
                 wx.offShow(onShow);
                 let currentTime = new Date().getTime();
                 console.log("backgroundTime====>onShow", currentTime);
                 resolve(currentTime-hideTime);
             };
 
-            wx.onHide(onHide);
             wx.onShow(onShow);
         });
     }
@@ -100,6 +97,34 @@ export class wxApi {
                     reject(res);
                 }
             })
+        });
+    }
+
+    static async getSetting():Promise{
+        return new Promise((resolve, reject) => {
+            wx.getSetting({
+                success:function (res) {
+                    resolve(res);
+                },
+                fail:function () {
+                    reject();
+                }
+            });
+        });
+    }
+
+    static async authSettingOfUserInfo():Promise<boolean>{
+        return new Promise<boolean>(async(resolve, reject) => {
+            try {
+                let res = await wxApi.getSetting();
+                if (res.authSetting && res.authSetting['scope.userInfo']){
+                    resolve(true);
+                }else {
+                    resolve(false);
+                }
+            }catch (e) {
+                resolve(false);
+            }
         });
     }
     

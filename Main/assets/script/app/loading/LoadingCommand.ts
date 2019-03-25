@@ -29,7 +29,7 @@ function addCount() {
 export default class LoadingCommand implements ICommand {
     async execute (...args):Promise{
         return new Promise(async resolve => {
-            let loadingMediator = Facade.mediatorOf("WelcomeScene", LoadingMediator);
+            let loadingMediator = Facade.findComponent("WelcomeScene", LoadingMediator);
             if (!loadingMediator)return;
             Facade.executeCommand("ToLoginCommand").then(addCount);
             let fileNames = cc.loader.getFileNames("/", cc.Prefab);

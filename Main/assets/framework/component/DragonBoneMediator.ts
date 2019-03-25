@@ -11,9 +11,7 @@
 
 
 
-import Facade from "../facade/Facade";
-
-const {ccclass, property, menu} = cc._decorator;
+const {ccclass, property, menu, requireComponent} = cc._decorator;
 
 enum DragonBonesEventType{
     START,
@@ -41,10 +39,10 @@ map.set(DragonBonesEventType.SOUND_EVENT, dragonBones.EventObject.SOUND_EVENT);
 
 @ccclass
 @menu("自定义/DragonBoneMediator")
+@requireComponent(dragonBones.ArmatureDisplay)
 export default class DragonBoneMediator extends cc.Component {
 
-    @property(dragonBones.ArmatureDisplay)
-    armatureDisplay:dragonBones.ArmatureDisplay = null;
+    private armatureDisplay:dragonBones.ArmatureDisplay = null;
 
     animationState:dragonBones.AnimationState = null;
 
@@ -52,10 +50,14 @@ export default class DragonBoneMediator extends cc.Component {
     armatureName:string = "Armature";
 
     @property({type:cc.Enum(DragonBonesEventType)})
-    eventTypes:[DragonBonesEventType] = [];
+    eventType:DragonBonesEventType = DragonBonesEventType.COMPLETE;
 
-    @property
-    commandName:string = "";
+    @property({type:cc.Component.EventHandler, displayName:"触发事件"})
+    eventHandlers:[cc.Component.EventHandler] = [];
+
+    onLoad(){
+        this.armatureDisplay = this.getComponent(dragonBones.ArmatureDisplay);
+    }
 
     private _playAnim(name:string, playTimes=0, timeScale=1){
         this.armatureDisplay.timeScale = timeScale;
@@ -105,23 +107,17 @@ export default class DragonBoneMediator extends cc.Component {
         this.armatureDisplay = armatureDisplay;
     }
 
-    addEventListener(){
-        this.eventTypes.forEach(value => this.armatureDisplay.addEventListener(map.get(value), this.handleEvent, this));
-    }
 
     async handleEvent(event){
-        if (this.commandName == ""){
-            throw Error("please input commandName of DragonBonesEventToCommand");
-        }
-        await Facade.executeCommand(this.commandName, event).catch(reason => console.log(reason));
+        cc.Component.EventHandler.emitEvents(this.eventHandlers, event);
     }
 
-    onEnable () {
-        this.addEventListener();
+    onLoad () {
+        this.armatureDisplay.addEventListener(map.get(this.eventType), this.handleEvent, this);
     }
 
-    onDisable(){
-        this.eventTypes.forEach(value => this.armatureDisplay.removeEventListener(map.get(value), this.handleEvent, this));
+    onDestroy(){
+        this.armatureDisplay.removeEventListener(map.get(this.eventType), this.handleEvent, this);
     }
 
 }

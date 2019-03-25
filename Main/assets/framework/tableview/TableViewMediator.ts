@@ -9,47 +9,42 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 /**
  * 使用TableView注意事项:
- * 1.设置view anchorY = 1  添加widget并设置top bottom left right都为0
- * 2.设置content anchorY = 1  y坐标为0  width与view的width保持一致
- * 3.添加TableViewMediator组件到scrollview节点下，并设置所有值
- * 4.创建ItemMediator并添加到item节点上，注意:给itemNode设置大小　并保证anchorY = 0.5
- * 5.当需要像排行榜动画时，需要设置view节点、content节点和item节点的anchorX为0，并且勾选itemAction属性
- * 6.给scrollview添加scrollevents ==> TableViewMediator.onScorllEvent
- *
- * 常见问题：
- *      1.只显示了第一页，滚动时，第二页后面的item为空白　==>实现上面的第6条，添加滚动事件
- *      2.刚开始第一行显示坐标是正常的，滚动后第一行显示坐标偏移了  ===>实现上面第1、2条
- *      3.开启itemAction，动画显示不正常 ==>实现上面第5条
+ * 1.设置mask 设置锚点(0, 1)  添加widget并设置top bottom left right都为0
+ * 2.设置content 设置锚点(0, 1)  添加widget并设置top left right都为0
+ * 3.设置itemNode  设置大小(w,h)　设置锚点(0, 0.5)
  * **/
 
-import {ITableItem} from "./ITableItem";
+import AbstractTableItem from "./AbstractTableItem";
 
-const {ccclass, property,menu} = cc._decorator;
+const {ccclass, property,menu, requireComponent, disallowMultiple, executionOrder} = cc._decorator;
 
 @ccclass
 @menu("自定义/TableViewMediator")
+@requireComponent(cc.ScrollView)
+@disallowMultiple
+@executionOrder(-10)
 export default class TableViewMediator extends cc.Component {
 
-    @property({type:cc.ScrollView})
     scrollView:cc.ScrollView = null;
 
-    @property({type:cc.Prefab})
-    itemPrefab:cc.Prefab = null;
+    @property(AbstractTableItem)
+    template:AbstractTableItem = null;
 
     @property({type:cc.Integer})
-    marginTop:Number = 0;
+    marginTop = 0;
 
     @property({type:cc.Integer})
-    marginBottom:Number = 0;
+    marginBottom = 0;
 
     @property({type:cc.Integer})
-    margin:Number = 0;
+    margin = 0;
 
     @property
-    itemMediatorName = "";
+    testNum = 0;
 
     @property
     itemAction:boolean = false;
+
 
     private itemHeight = 0;
 
@@ -63,7 +58,14 @@ export default class TableViewMediator extends cc.Component {
     // LIFE-CYCLE CALLBACKS:
 
     onLoad(){
-        let itemNode = cc.instantiate(this.itemPrefab);
+        this.scrollView = this.node.getComponent(cc.ScrollView);
+        let eventHandler = new cc.Component.EventHandler();
+        eventHandler.target = this.node; //这个 node 节点是你的事件处理代码组件所属的节点
+        eventHandler.component = "TableViewMediator";
+        eventHandler.handler = "onScrollEvent";
+        eventHandler.customEventData = "";
+        this.scrollView.scrollEvents.push(eventHandler);
+        let itemNode = cc.instantiate(this.template.node);
         itemNode.active = false;
         this.itemHeight = itemNode.getContentSize().height;
         let itemHeightHalf = this.itemHeight/2;
@@ -86,6 +88,7 @@ export default class TableViewMediator extends cc.Component {
             // console.log("wx sub===>node.y", node.y);
         }
 
+        itemNode.x = 0;
         itemNode.y = -height - itemHeightHalf;
         itemNode.setParent(content);
         this.list.push(itemNode);
@@ -95,6 +98,13 @@ export default class TableViewMediator extends cc.Component {
         this.scheduleOnce(function () {
             self._adjustList();
         }, 0.1);
+        if (this.testNum > 0){
+            let test = [];
+            for (let i=0; i<this.testNum; i++){
+                test.push(i+1);
+            }
+            this.setData(test);
+        }
     }
 
     _adjustList(){
@@ -103,7 +113,7 @@ export default class TableViewMediator extends cc.Component {
         let itemHeightHalf = this.itemHeight/2;
         let height = this.marginTop + (this.itemHeight + this.margin) * this.list.length  - this.margin;
         while (height < viewSize.height + this.itemHeight){
-            let node = cc.instantiate(this.itemPrefab);
+            let node = cc.instantiate(this.template.node);
             node.active = false;
             node.x = 0;
             node.y = -height - itemHeightHalf;
@@ -123,7 +133,7 @@ export default class TableViewMediator extends cc.Component {
         }
     }
 
-    setData(data:Array){
+    setData(data:Array<any>){
         /** 计算最大firstIndexMax */
         let num = Math.ceil((this.scrollView.node.getContentSize().height - this.marginTop - this.marginBottom + this.margin) / (this.itemHeight+this.margin));
         this.firstIndexMax = data.length - num - 1;
@@ -166,13 +176,13 @@ export default class TableViewMediator extends cc.Component {
     }
 
 
-    updateItem(node:cc.Node, index:Number){
+    updateItem(node:cc.Node, index:number){
         let value = this.data[index];
-        let itemMediator = <ITableItem>node.getComponent(this.itemMediatorName);
+        let itemMediator = node.getComponent(AbstractTableItem);
         itemMediator.upadteItem(value, index);
     }
 
-    onScrollEvent(event){
+    private onScrollEvent(event){
         // console.log(event, "event");
         let content = this.scrollView.content;
         // let contentHeight = content.getContentSize().height;

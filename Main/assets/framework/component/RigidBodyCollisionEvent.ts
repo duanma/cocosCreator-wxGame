@@ -9,10 +9,6 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 
-
-
-import Facade from "../facade/Facade";
-
 const {ccclass, property, menu} = cc._decorator;
 
 enum RigidBodyCollisionType{
@@ -30,20 +26,19 @@ map.set(RigidBodyCollisionType.onPostSolve, "onPostSolve");
 
 
 @ccclass
-@menu("自定义/RigidBodyCollisionToCommand")
-export default class RigidBodyCollisionToCommand extends cc.Component {
+@menu("自定义/RigidBodyCollisionEvent")
+export default class RigidBodyCollisionEvent extends cc.Component {
 
     @property({type:cc.Enum(RigidBodyCollisionType), displayName:"刚体碰撞类型"})
-    collisions:[RigidBodyCollisionType] = [];
+    collisionType:RigidBodyCollisionType = RigidBodyCollisionType.onBeginContact;
 
-    @property({type:cc.String, displayName:"碰撞触发命令"})
-    commands:[string] = [];
+    @property({type:cc.Component.EventHandler, displayName:"触发事件"})
+    eventHandlers:[cc.Component.EventHandler] = [];
 
     onLoad(){
-        let self = this;
-        this.collisions.forEach((value, index) => this[map.get(value)] = async function (...args) {
-            await Facade.executeCommand(self.commands[index], ...args);
-        });
+        this[map.get(this.collisionType)] = async (...args)=>{
+            cc.Component.EventHandler.emitEvents(this.eventHandlers, ...args);
+        }
     }
 
 }

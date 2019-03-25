@@ -11,8 +11,8 @@
 
 
 import {HttpOption} from "./HttpOption";
-import Facade from "../facade/Facade";
 import HttpProtocol from "./HttpProtocol";
+import Facade from "../facade/Facade";
 
 const {ccclass, property} = cc._decorator;
 

@@ -9,19 +9,16 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 
-
-
 import {ICommand} from "./ICommand";
 import {ext} from "../extend/Extend";
-import {Interceptor} from "../interceptor/Interceptor";
-import LifeCycle from "../component/LifeCycle";
 import Actions from "../actions/Actions";
+import {Interceptor} from "../interceptor/Interceptor";
 
 export default class Facade {
 
-    static mediatorOf<T>(nodeName:string, type: {prototype: T}, referenceNode?: cc.Node): T;
+    static findComponent<T>(nodeName:string, type: {prototype: T}, referenceNode?: cc.Node): T;
 
-    static  mediatorOf(nodeName:string, type, referenceNode?: cc.Node){
+    static  findComponent(nodeName:string, type, referenceNode?: cc.Node){
         referenceNode = referenceNode || this.canvasNode;
         let node = cc.find(nodeName, referenceNode);
         if (node){

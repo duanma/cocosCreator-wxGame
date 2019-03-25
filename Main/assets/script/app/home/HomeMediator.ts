@@ -42,11 +42,7 @@ export default class HomeMediator extends cc.Component {
     }
 
     updateSound(){
-        if (Music.getMusicOpen()){
-            this.soundToggle.check();
-        }else {
-            this.soundToggle.uncheck();
-        }
+        this.soundToggle.isChecked = Music.getMusicOpen();
     }
 }
 

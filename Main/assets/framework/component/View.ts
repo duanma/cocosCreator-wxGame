@@ -8,8 +8,8 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import Facade from "../facade/Facade";
 import {ext} from "../extend/Extend";
+import Facade from "../facade/Facade";
 
 const {ccclass, property, menu} = cc._decorator;
 
@@ -20,6 +20,9 @@ export default class View extends cc.Component {
     static clickSoundCommand:string = null;
 
     static IPHONEX_TOP_BLACK_HEIGHT = 66;
+
+    @property({displayName:"启动命令", tooltip:"加载成功后执行启动命令"})
+    startCommandName = "";
 
     @property({type:cc.Widget, displayName:"适配IphoneX", tooltip:"widget.top += 66"})
     adapterIphoneX:[cc.Widget] = [];
@@ -39,7 +42,12 @@ export default class View extends cc.Component {
         }
         this.targetToCanvas.forEach(value => value.target = Facade.canvasNode);
         this.screenSize.forEach(value => value.setContentSize(Facade.canvasNode.getContentSize()))
+    }
 
+    start(){
+        if (this.startCommandName != ""){
+            Facade.executeCommand(this.startCommandName);
+        }
     }
 
     onDestroy(){

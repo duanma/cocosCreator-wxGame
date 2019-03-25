@@ -8,7 +8,6 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {Shake} from "../extend/Shake";
 
 export default class Actions {
 
@@ -116,11 +115,28 @@ export default class Actions {
         return spawn;
     }
 
+    /**
+     * 圆运动
+     * @param {Number} duration
+     * @param {cc.Node|cc.p} dot 圆心点坐标或者node
+     * @param {Number}   半径 如果为负数, 反时钟方向
+     * @param {Number}  旋转角度
+     * @returns {cc.CardinalSplineTo}
+     */
+    static circleBy(duration, dot, r, angle):cc.ActionInterval{
+        var dp = angle || 20, dpr = 360 / dp, ary = [];
+        r = r || 20;
+        if(r < 0) dpr = -dpr;
+        r = Math.abs(r);
 
-    /** 抖动效果 */
-    static shakeAction(duration:number = 1, strengthX:number = 15, strengthY:number = 15):cc.ActionInterval{
-        return Shake.create(duration, strengthX, strengthY);
-    }
+        let rad = Math.PI/180;
+
+        for(var i = 0; i < dp; i ++){
+            ary.push(cc.v2(Math.sin(dpr * i * rad) * r + dot.x, Math.cos(dpr * i * rad) * r + dot.y));
+        }
+        ary.push(ary);
+        return cc.cardinalSplineTo(duration, ary, 0);
+    };
 
 }
 

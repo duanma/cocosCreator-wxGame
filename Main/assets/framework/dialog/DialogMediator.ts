@@ -9,8 +9,7 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 
-import EventEmitter from "../component/EventEmitter";
-import Window from "../component/View";
+import View from "../component/View";
 
 const {ccclass, property} = cc._decorator;
 
@@ -79,20 +78,20 @@ export default class DialogMediator extends cc.Component {
     textOfRightButton:cc.RichText = null;
 
     onClickLeft(event, data){
-        Window.executeClickSoundCommand(event, data);
-        this.node.emit(EventEmitter.type, "left");
+        View.executeClickSoundCommand(event, data);
+        this.node.emit("clickButton", "left");
         this.node.destroy();
     }
 
     onClickRight(event, data){
-        Window.executeClickSoundCommand(event, data);
-        this.node.emit(EventEmitter.type, "right");
+        View.executeClickSoundCommand(event, data);
+        this.node.emit("clickButton", "right");
         this.node.destroy();
     }
 
     onClickClose(event, data){
-        Window.executeClickSoundCommand(event, data);
-        this.node.emit(EventEmitter.type, "close");
+        View.executeClickSoundCommand(event, data);
+        this.node.emit("clickButton", "close");
         this.node.destroy();
     }
 

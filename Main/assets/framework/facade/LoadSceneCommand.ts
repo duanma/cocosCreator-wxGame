@@ -39,11 +39,14 @@ export default class LoadSceneCommand implements ICommand {
 
             blockInputNode.active = true;
             let prefab = await cc.loader.loadResAwait("prefab/"+sceneName, cc.Prefab);
-            let node:cc.Node = cc.instantiate(prefab);
             /** 先把场景上的资源都干掉除了摄像机 */
             let deletes = Facade.canvasNode.children.filter(value => value.getComponent(cc.Camera) == null);
-            deletes.forEach(value => value.destroy());
+            deletes.forEach(value => {
+                value.removeFromParent(true);
+                value.destroy();
+            });
             blockInputNode.active = false;
+            let node:cc.Node = cc.instantiate(prefab);
             node.setParent(Facade.canvasNode);
             currentSceneName = sceneName;
             resolve(node);

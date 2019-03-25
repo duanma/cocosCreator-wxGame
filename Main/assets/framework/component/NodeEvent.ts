@@ -9,8 +9,6 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 
-import Facade from "../facade/Facade";
-
 const {ccclass, property, menu} = cc._decorator;
 
 enum NodeEventType{
@@ -54,31 +52,27 @@ map.set(NodeEventType.CHILD_REMOVED, cc.Node.EventType.CHILD_REMOVED);
 map.set(NodeEventType.CHILD_REORDER, cc.Node.EventType.CHILD_REORDER);
 map.set(NodeEventType.GROUP_CHANGED, cc.Node.EventType.GROUP_CHANGED);
 
+
 @ccclass
-@menu("自定义/NodeEventToCommand")
-export default class NodeEventToCommand extends cc.Component {
+@menu("自定义/NodeEvent")
+export default class NodeEvent extends cc.Component {
 
     @property({type:cc.Enum(NodeEventType), displayName:"事件类型"})
-    eventTypes:[NodeEventType] = [];
+    eventType:NodeEventType = NodeEventType.TOUCH_END;
 
-    @property({type:cc.String, displayName:"事件对应命令"})
-    commands:[string] = [];
-
-    private handleEvents = [];
+    @property({type:cc.Component.EventHandler, displayName:"触发事件"})
+    eventHandlers:[cc.Component.EventHandler] = [];
 
     onLoad () {
-        let self = this;
-        this.eventTypes.forEach((value, index) => {
-            let f = async function (...args) {
-                await Facade.executeCommand(self.commands[index], ...args);
-            };
-            self.handleEvents[index] = f;
-            self.node.on(map.get(value), f);
-        });
+        this.node.on(map.get(this.eventType), this.onNodeEvent, this);
+    }
+
+    onNodeEvent(event){
+        cc.Component.EventHandler.emitEvents(this.eventHandlers, event);
     }
 
 
     onDestroy(){
-        this.eventTypes.forEach((value, index) => this.node.off(map.get(value), this.handleEvents[index]));
+        this.node.off(map.get(this.eventType), this.onNodeEvent, this);
     }
 }

@@ -10,7 +10,6 @@
 
 
 import {AppConfig} from "./config/AppConfig";
-import {AdConfig} from "./config/AdConfig";
 import {NetworkConfig} from "./config/NetworkConfig";
 import {localStorageKeys} from "./config/LocalStorageKeys";
 import {World} from "./info/World";
@@ -20,7 +19,6 @@ import {LocalStorage} from "../../framework/persistence/LocalStorage";
 import Facade from "../../framework/facade/Facade";
 import {ext} from "../../framework/extend/Extend";
 import DialogMediator from "../../framework/dialog/DialogMediator";
-import {AdManager} from "../../framework/wxApi/AdManager";
 import {wxApi} from "../../framework/wxApi/wxApi";
 import {HttpOption} from "../../framework/http/HttpOption";
 import {HttpClient} from "../../framework/http/HttpClient";
@@ -73,10 +71,6 @@ export default class StartupCommand implements ICommand {
             View.clickSoundCommand = "ClickSoundCommand";
 
             DialogMediator.dialogPrefabName = "prefab/dialog";
-
-            /** 初始化视频广告组件 */
-            AdManager.initVideo(AdConfig.videoAdUintId);
-            AdManager.maxDailyVideoCount = AdConfig.maxDailyVideoCount;
 
             wxApi.start();
             wxApi.friendRankKey = AppConfig.rankKey;
